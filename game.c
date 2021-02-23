@@ -18,23 +18,59 @@
 #define GY 140 // gun x
 
 fixed seed;
+struct Copter {
+  UINT8 height;
+  UINT8 direction;
+  UINT8 sprite;
+  UINT8 x;
+  UINT8 state; // 0 = dead/not spawned
+               // 1 = alive
+} copters[3] = {
+  {0, 0, 2, 0, 0},
+  {0, 0, 4, 0, 0},
+  {0, 0, 6, 0, 0}
+};
 
-// struct Copter {
-//   UINT8 height; // what the copter's copter's height is
-//   UINT8 direction; // -1 or 1 depending on left / right
-//   UINT8 sprite; // sprite # of copter
-// };
 
-// struct Copter new_copter;
 
-// struct Copters {
-//   struct Copter copters[3];
-//   UINT8 active;
-// };
+struct Dude {
+  UINT8 x;
+  UINT8 y;
+  UINT8 sprite;
+  UINT8 state; // 0 = dead/not spawned
+               // 1 = alive
+               // 2 = on ground
+} dudes[12] = {
+  {0, 0,  8, 0},
+  {0, 0,  9, 0},
+  {0, 0, 10, 0},
+  {0, 0, 11, 0},
+  {0, 0, 12, 0},
+  {0, 0, 13, 0},
+  {0, 0, 14, 0},
+  {0, 0, 15, 0},
+  {0, 0, 16, 0},
+  {0, 0, 17, 0},
+  {0, 0, 18, 0},
+  {0, 0, 19, 0}
+};
 
-// struct copters Copters;
 
-UBYTE new_height, new_direction, copters_active;
+// enemy vars
+UINT8 c_alive = 0; // copters alive
+UINT8 d_alive = 0; // dudes alive
+
+
+// player vars
+UINT8 pos = 0; // gun position
+UINT8 new_pos = 0; // used to save calcuations for moving the gun
+
+// misc vars
+UINT8 i = 0;
+UINT8 temp_height = 0;
+unsigned char switcheroo = 'r'; // used for logic in switching from the left to right
+UINT8 cooldown = 250; // cooldown timer for between chopper spawns
+
 void main()
 {
 
@@ -46,13 +82,9 @@ void main()
   move_sprite(0, GX, GY); // Move sprite to our predefined x and y coords
   set_sprite_tile(1, 2);
   move_sprite(1, GX + 8, GY);
-  UINT8 pos = 0;
-  unsigned char switcheroo = 'r';
-  UINT8 new_pos = 0;
 
 
-  UINT8 copters = 0;
-  UINT8 copX = 0;
+
   set_sprite_data(64, 4, copter);
   set_sprite_tile(2, 64); // copter 1
   set_sprite_tile(3, 66);
@@ -64,9 +96,7 @@ void main()
   set_sprite_tile(7, 66);
 
 
-UINT8 dudeX = 0;
-UINT8 dudeY = 0;
-UINT8 dudes = 0;
+// UINT8 dudes = 0;
   set_sprite_data(68, 2, dude);
   set_sprite_tile(8, 68);  //  1
   set_sprite_tile(9, 68);  //  2
@@ -121,36 +151,96 @@ UINT8 dudes = 0;
 
   while (1)
   {
-    if (!copters) { // make a new copter
-      new_height = rand();
-      if (new_height > 15 && new_height < 48) { // rng has blessed us with a chopper
-        copters = 1;
-        // move_sprite(2, 80, new_height);
-        // move_sprite(3, 88, new_height);
+    gotoxy(0,0); printf(" %d ", cooldown);
+    if (c_alive < 3)
+    {
+      cooldown = 250;
+      temp_height = rand();
+
+      // only need to enter this if we roll a valid number
+      if (temp_height > 15 && temp_height < 48)
+      {
+        // choose a copter that is dead or not spawned (usually the first one) // DO NOT FORGET TO RESET i WHEN YOU ARE DONE
+        while (copters[i].state != 0) {
+          i = i + 1;
+        } 
+
+        copters[i].height = temp_height;
+        if (rand() % 2 == 0)
+        {
+          copters[i].direction = 1;
+          copters[i].x = 0;
+          move_sprite(copters[i].sprite, 0, copters[i].height);
+          move_sprite(copters[i].sprite + 1, copters[i].x + 8, copters[i].height);
+        }
+        else
+        {
+          copters[i].direction = 2;
+          // mirror the sprite
+          set_sprite_prop(copters[i].sprite, S_FLIPX);
+          set_sprite_prop(copters[i].sprite + 1, S_FLIPX);
+          
+          copters[i].x = 150
+          move_sprite(copters[i].sprite, copters[i].x, copters[i].height);
+          move_sprite(copters[i].sprite + 1, copters[i].x - 8, copters[i].height);
+        }
+        // if we get here, we need to mark the copter as alive and increment the number of choppers
+        copters[i].state = 1;
+        c_alive = c_alive + 1;
       }
-    } else {
-      // animate the copter
-      copX = copX + 1;
-      move_sprite(2, copX, new_height);
-      move_sprite(3, copX+8, new_height);
-      // animate the dude
-      // needs some randomness, however.
-      if (!dudes) {
-        dudeX = rand();
-        if (dudeX <= copX && dudeX > copX - 15 && dudeX < 150 && dudeX > 10) {
-          dudeY = new_height;
-          dudes = 1;
-        }
-      } else {
-        // animate the dude falling
-        // add some randomness into their falling?
-        if (rand() % 2){
-          dudeY = dudeY + 1;
-          move_sprite(8, dudeX, dudeY);
-        }
+      i = 0;
+    }
+
+    while(i < 3)
+    {
+      if (copters[i].state == 1)
+      {
+        copters[i].direction % 2 ? copters[i].x = copters[i].x + 1 : copters[i].x = copters[i].x - 1;
+        move_sprite(copters[i].sprite, copters[i].x, copters[i].height);
+        move_sprite(copters[i].sprite, copters[i].x /*TODO*/ copters[i].height);
       }
     }
-    gotoxy(0,0); printf(" %d ", dudes);
+    // while(i < 3) // just check every single one like an ape
+    // {
+    //   if (copters[i].state == 1) // this is an alive copter
+    //   {
+    //     copters[i].direction % 2 ? copters[i].x = copters[i].x + 1 : copters[i].x - 1;
+    //     move_sprite()
+    //   }
+    //   i = i + 1;
+    // }
+    // i = 0;
+    // animate the alive copters
+    // if (!copters) { // make a new copter
+    //   new_height = rand();
+    //   if (new_height > 15 && new_height < 48) { // rng has blessed us with a chopper
+    //     copters = 1;
+    //     // move_sprite(2, 80, new_height);
+    //     // move_sprite(3, 88, new_height);
+    //   }
+    // } else {
+    //   // animate the copter
+    //   copX = copX + 1;
+    //   move_sprite(2, copX, new_height);
+    //   move_sprite(3, copX+8, new_height);
+    //   // animate the dude
+    //   // needs some randomness, however.
+    //   if (!dudes) {
+    //     dudeX = rand();
+    //     if (dudeX <= copX && dudeX > copX - 15 && dudeX < 150 && dudeX > 10) {
+    //       dudeY = new_height;
+    //       dudes = 1;
+    //     }
+    //   } else {
+    //     // animate the dude falling
+    //     // add some randomness into their falling?
+    //     if (rand() % 2){
+    //       dudeY = dudeY + 1;
+    //       move_sprite(8, dudeX, dudeY);
+    //     }
+    //   }
+    // }
+    // gotoxy(0,0); printf(" %d ", dudes);
     // gotoxy(0,0); printf(" %d : %d ",  cop_2_x, new_height);
 
     // REFERNCE
@@ -270,6 +360,7 @@ UINT8 dudes = 0;
       }
     }
     delay(50);
+    cooldown = cooldown - 50;
     wait_vbl_done();
   }
 }
