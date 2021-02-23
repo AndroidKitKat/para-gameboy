@@ -11,6 +11,7 @@
 #include "dude_landed.c"
 
 // const unsigned char HUD2[] = " %d %c : %d %d ";
+const unsigned char HUD[] = " Score: %d Lives: %d ";
 
 #define CLEAR_PROP  0x0U
 
@@ -67,9 +68,12 @@ UINT8 new_pos = 0; // used to save calcuations for moving the gun
 
 // misc vars
 UINT8 i = 0;
+UINT8 j = 0;
 UINT8 temp_height = 0;
 unsigned char switcheroo = 'r'; // used for logic in switching from the left to right
 UINT8 cooldown = 250; // cooldown timer for between chopper spawns
+UINT8 cooldown2 = 250;
+UBYTE lives = 5;
 
 void main()
 {
@@ -83,8 +87,6 @@ void main()
   set_sprite_tile(1, 2);
   move_sprite(1, GX + 8, GY);
 
-
-
   set_sprite_data(64, 4, copter);
   set_sprite_tile(2, 64); // copter 1
   set_sprite_tile(3, 66);
@@ -96,7 +98,6 @@ void main()
   set_sprite_tile(7, 66);
 
 
-// UINT8 dudes = 0;
   set_sprite_data(68, 2, dude);
   set_sprite_tile(8, 68);  //  1
   set_sprite_tile(9, 68);  //  2
@@ -114,13 +115,6 @@ void main()
   // we're also loading data for dudes when then land
   set_sprite_data(70, 2, dude_landed);
 
-  // UINT8 bul_x = 0; 
-  // UINT8 bul_y = 0;
-  // // set_sprite_data(2, 1, bullet);
-  // // set_sprite_tile(2, 60);
-  // // move_sprite(2, bul_x, bul_y);
-  // unsigned char active_shooter = 'f';
-
 
 
   // generate random data
@@ -129,13 +123,13 @@ void main()
   waitpadup();
   seed.b.l = DIV_REG;
   gotoxy(0,0); printf("Now loading SABOTAGE");
-  delay(1000);
-  printf(".");
-  delay(1000);
-  printf(".");
-  delay(1000);
-  printf(".\n");
-  delay(1000);
+  // delay(1000);
+  // printf(".");
+  // delay(1000);
+  // printf(".");
+  // delay(1000);
+  // printf(".\n");
+  // delay(1000);
   printf("Press any button!");
   waitpad(0xFF);
   waitpadup();
@@ -151,8 +145,14 @@ void main()
 
   while (1)
   {
-    gotoxy(0,0); printf(" %d ", cooldown);
-    if (c_alive < 3)
+    gotoxy(0, 0); printf(HUD, 0, lives);
+    // if(lives <= 0)
+    // {
+    //   // end the game
+    //   // figure out how to do this. 
+    // }
+    // gotoxy(0,0); printf(" %d ", cooldown);
+    if (c_alive < 3 && cooldown == 0)
     {
       cooldown = 250;
       temp_height = rand();
@@ -180,7 +180,7 @@ void main()
           set_sprite_prop(copters[i].sprite, S_FLIPX);
           set_sprite_prop(copters[i].sprite + 1, S_FLIPX);
           
-          copters[i].x = 150
+          copters[i].x = 150;
           move_sprite(copters[i].sprite, copters[i].x, copters[i].height);
           move_sprite(copters[i].sprite + 1, copters[i].x - 8, copters[i].height);
         }
@@ -191,34 +191,72 @@ void main()
       i = 0;
     }
 
+    if (d_alive < 12)
+    {
+
+    }
     while(i < 3)
     {
+      // gotoxy(0,0); printf(" %d ", i);
       if (copters[i].state == 1)
       {
-        copters[i].direction % 2 ? copters[i].x = copters[i].x + 1 : copters[i].x = copters[i].x - 1;
-        move_sprite(copters[i].sprite, copters[i].x, copters[i].height);
-        move_sprite(copters[i].sprite, copters[i].x /*TODO*/ copters[i].height);
+        if (copters[i].direction % 2) {
+          copters[i].x += 1;
+          move_sprite(copters[i].sprite, copters[i].x, copters[i].height);
+          move_sprite(copters[i].sprite + 1, copters[i].x + 8, copters[i].height);
+        } else {
+          copters[i].x -= 1;
+          move_sprite(copters[i].sprite, copters[i].x, copters[i].height);
+          move_sprite(copters[i].sprite + 1, copters[i].x - 8, copters[i].height);
+        }
+        // now do the dude
+        while(j < 12) // again this is ass 
+        {
+          // gotoxy(0,0); printf(" %d ", d_alive);
+          if (dudes[j].state == 0 && cooldown2 < 30)
+          {
+            temp_height = rand(); // please ignore this var being called temp_height, it is actually a temp X coord but i cba.
+            // ass but might work
+            if (temp_height > 0 && temp_height < 150)
+            {
+              if (copters[i].direction % 2) // this is for choppers that are moving left to right
+              {
+                if (temp_height > copters[i].x - 5 && temp_height <= copters[i].x)
+                {
+                  dudes[j].x = temp_height;
+                  dudes[j].y = copters[i].height;
+                  dudes[j].state = 1;
+                  d_alive += 1;
+                  break;
+                }
+              }
+            }
+          }
+          else
+          {
+            if (dudes[j].state == 1) // dudes that are falling
+            {
+              if (rand() % 2)
+              {
+                if (dudes[j].y + 1 == 140)
+                {
+                  // player loses a life
+                  lives -= 1;
+                  set_sprite_tile(dudes[j].sprite, 70);
+                  dudes[j].state = 2;
+                }
+                dudes[j].y += 1;
+                move_sprite(dudes[j].sprite, dudes[j].x, dudes[j].y);
+              }
+            }
+          }
+          j += 1;
+        }
+        j = 0;
       }
+      i = i + 1;
     }
-    // while(i < 3) // just check every single one like an ape
-    // {
-    //   if (copters[i].state == 1) // this is an alive copter
-    //   {
-    //     copters[i].direction % 2 ? copters[i].x = copters[i].x + 1 : copters[i].x - 1;
-    //     move_sprite()
-    //   }
-    //   i = i + 1;
-    // }
-    // i = 0;
-    // animate the alive copters
-    // if (!copters) { // make a new copter
-    //   new_height = rand();
-    //   if (new_height > 15 && new_height < 48) { // rng has blessed us with a chopper
-    //     copters = 1;
-    //     // move_sprite(2, 80, new_height);
-    //     // move_sprite(3, 88, new_height);
-    //   }
-    // } else {
+    i = 0;
     //   // animate the copter
     //   copX = copX + 1;
     //   move_sprite(2, copX, new_height);
@@ -361,6 +399,7 @@ void main()
     }
     delay(50);
     cooldown = cooldown - 50;
+    cooldown2 = cooldown2 - 5;
     wait_vbl_done();
   }
 }
