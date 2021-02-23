@@ -115,6 +115,9 @@ void main()
   // we're also loading data for dudes when then land
   set_sprite_data(70, 2, dude_landed);
 
+  set_sprite_data(74, 2, bullet);
+  set_sprite_tile(20, 74);
+
 
 
   // generate random data
@@ -298,6 +301,139 @@ void main()
     //   bul_y = 120;
     //   move_sprite(2, bul_x, bul_y);
     // }
+
+    if (joypad() == J_A)
+    {
+      // Right now hardcoded. Somehow, have to know the angle and x/y of end of gun
+      // We can choose angle and starting x/y based on "pos" var
+      // e.g. when pos == 60, angle is straight up (90), starting x/y is 
+      // Also this might just be a shite way to do it. But I'm kinda brute forcing the initial
+      // x/y for bullets from each position in the gun. From there we can mess around to find angle,
+      // then animate, then collision.
+      UINT8 bullet_x = 80;
+      UINT8 bullet_y = 125;
+      switch (pos) {
+        case 0:  
+          bullet_x = 95;
+          bullet_y = 140; 
+          break; 
+        case 4:  
+          bullet_x = 95;
+          bullet_y = 137; 
+          break; 
+        case 8:  
+          bullet_x = 95;
+          bullet_y = 135; 
+          break; 
+        case 12:  
+          bullet_x = 95;
+          bullet_y = 133; 
+          break; 
+        case 16:  
+          bullet_x = 95;
+          bullet_y = 131; 
+          break; 
+        case 20:  
+          bullet_x = 95;
+          bullet_y = 129; 
+          break; 
+        case 24:  
+          bullet_x = 95;
+          bullet_y = 127; 
+          break; 
+        case 28:  
+          bullet_x = 95;
+          bullet_y = 125; 
+          break; 
+        case 32:  
+          bullet_x = 93;
+          bullet_y = 125;
+          break; 
+        case 36:  
+          bullet_x = 92;
+          bullet_y = 125;
+          break; 
+        case 40:
+          bullet_x = 89;
+          bullet_y = 125;
+          break; 
+        case 44:
+          bullet_x = 87;
+          bullet_y = 125;
+          break; 
+        case 48:
+          bullet_x = 85;
+          bullet_y = 125;
+          break; 
+        case 56:
+          bullet_x = 80;
+          bullet_y = 125;
+          break; 
+        case 60:
+          bullet_x = 80;
+          bullet_y = 125;
+          break; 
+        case 64:
+          bullet_x = 73;
+          bullet_y = 125;
+          break; 
+        case 68:
+          bullet_x = 71;
+          bullet_y = 125;
+          break; 
+        case 72:
+          bullet_x = 69;
+          bullet_y = 125;
+          break; 
+        case 76:
+          bullet_x = 67;
+          bullet_y = 125;
+          break; 
+        case 80:
+          bullet_x = 65;
+          bullet_y = 125;
+          break; 
+        case 84:
+          bullet_x = 63;
+          bullet_y = 125;
+          break; 
+        case 88:
+          bullet_x = 63;
+          bullet_y = 126;
+          break; 
+        case 92:
+          bullet_x = 62;
+          bullet_y = 128;
+          break; 
+        case 96:
+          bullet_x = 62;
+          bullet_y = 130;
+          break; 
+        case 100:
+          bullet_x = 62;
+          bullet_y = 132;
+          break; 
+        case 104:
+          bullet_x = 63;
+          bullet_y = 134;
+          break; 
+        case 108:
+          bullet_x = 63;
+          bullet_y = 136;
+          break; 
+        case 112:
+          bullet_x = 62;
+          bullet_y = 140;
+          break; 
+        default:
+          break;
+      }
+      printf("POS: %d", pos); // debug
+      move_sprite(20, bullet_x, bullet_y);
+    }
+
+
+
     // right half
     if (pos / 4 < 14)
     {
