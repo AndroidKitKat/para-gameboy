@@ -1,9 +1,5 @@
 still needs 
 
-animating dudes falling 
-    - and subsequent them landing on the ground (i've got another sprite for this, look @ line 115 game.c)
-        - all you really need to do is detect when their y is the floor and then change the sprite and remove a life
-              - lives also need to be done
 
 gun shooting
     - this is going to be probably tricky. 
