@@ -1,0 +1,16 @@
+still needs 
+
+animating dudes falling 
+    - and subsequent them landing on the ground (i've got another sprite for this, look @ line 115 game.c)
+        - all you really need to do is detect when their y is the floor and then change the sprite and remove a life
+              - lives also need to be done
+
+gun shooting
+    - this is going to be probably tricky. 
+    - going to have to do some sort of shenanigans to find barrel angle (maybe some sort of lookup with sprite #)
+
+
+bullet collision
+    - ultimately the hardest bit
+    - my initial ideas for this is making the bullet sprite 8x16 with the bullet in the top right corner 
+    - this *should* make collision easier, but im not sure honestly, might run into issues with missing (ie over the top of enemies)
