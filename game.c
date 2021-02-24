@@ -63,36 +63,19 @@ struct Bullet {
   UINT8 sprite;
   UINT8 dx;
   UINT8 dy;
-} bullets[28] = {
-  {95, 140, 0, 0, 0},
-  {95, 137, 0, 0, 0},
-  {95, 135, 0, 0, 0},
-  {95, 133, 0, 0, 0},
-  {95, 131, 0, 0, 0},
-  {95, 129, 0, 0, 0},
-  {95, 127, 0, 0, 0},
-  {95, 125, 0, 0, 0},
-  {93, 125, 0, 0, 0},
-  {92, 125, 0, 0, 0},
-  {89, 125, 0, 0, 0},
-  {87, 125, 0, 0, 0},
-  {85, 125, 0, 0, 0},
-  {80, 125, 0, 0, 0},
-  {80, 125, 0, 0, 0},
-  {73, 125, 0, 0, 0},
-  {71, 125, 0, 0, 0},
-  {69, 125, 0, 0, 0},
-  {67, 125, 0, 0, 0},
-  {65, 125, 0, 0, 0},
-  {63, 125, 0, 0, 0},
-  {63, 126, 0, 0, 0},
-  {62, 128, 0, 0, 0},
-  {62, 130, 0, 0, 0},
-  {62, 132, 0, 0, 0},
-  {63, 134, 0, 0, 0},
-  {63, 136, 0, 0, 0},
-  {62, 140, 0, 0, 0}
-}
+  UINT8 state; // 0 for off screen, 1 for on screen
+} bullets[10] = {
+  {0, 0, 20, 0, 0, 0},
+  {0, 0, 21, 0, 0, 0},
+  {0, 0, 22, 0, 0, 0},
+  {0, 0, 23, 0, 0, 0},
+  {0, 0, 24, 0, 0, 0},
+  {0, 0, 25, 0, 0, 0},
+  {0, 0, 26, 0, 0, 0},
+  {0, 0, 27, 0, 0, 0},
+  {0, 0, 28, 0, 0, 0},
+  {0, 0, 29, 0, 0, 0}
+};
 
 // enemy vars
 UINT8 c_alive = 0; // copters alive
@@ -152,8 +135,17 @@ void main()
   // we're also loading data for dudes when then land
   set_sprite_data(70, 2, dude_landed);
 
-  set_sprite_data(74, 2, bullet);
-  set_sprite_tile(20, 74);
+  set_sprite_data(74, 2, bullet); // 28 total
+  set_sprite_tile(20, 74); // 1
+  set_sprite_tile(21, 74); // 2
+  set_sprite_tile(22, 74); // 3
+  set_sprite_tile(23, 74); // 4
+  set_sprite_tile(24, 74); // 5
+  set_sprite_tile(25, 74); // 6
+  set_sprite_tile(26, 74); // 7
+  set_sprite_tile(27, 74); // 8
+  set_sprite_tile(28, 74); // 9
+  set_sprite_tile(29, 74); // 10
 
 
 
@@ -341,133 +333,219 @@ void main()
 
     if (joypad() == J_A)
     {
+      i = 0;
+      while (i < 10) {
       // Right now hardcoded. Somehow, have to know the angle and x/y of end of gun
       // We can choose angle and starting x/y based on "pos" var
       // e.g. when pos == 60, angle is straight up (90), starting x/y is 
       // Also this might just be a shite way to do it. But I'm kinda brute forcing the initial
       // x/y for bullets from each position in the gun. From there we can mess around to find angle,
       // then animate, then collision.
-      UINT8 bullet_x = 80;
-      UINT8 bullet_y = 125;
-      switch (pos) {
-        case 0:  
-          bullet_x = 95;
-          bullet_y = 140; 
-          break; 
-        case 4:  
-          bullet_x = 95;
-          bullet_y = 137; 
-          break; 
-        case 8:  
-          bullet_x = 95;
-          bullet_y = 135; 
-          break; 
-        case 12:  
-          bullet_x = 95;
-          bullet_y = 133; 
-          break; 
-        case 16:  
-          bullet_x = 95;
-          bullet_y = 131; 
-          break; 
-        case 20:  
-          bullet_x = 95;
-          bullet_y = 129; 
-          break; 
-        case 24:  
-          bullet_x = 95;
-          bullet_y = 127; 
-          break; 
-        case 28:  
-          bullet_x = 95;
-          bullet_y = 125; 
-          break; 
-        case 32:  
-          bullet_x = 93;
-          bullet_y = 125;
-          break; 
-        case 36:  
-          bullet_x = 92;
-          bullet_y = 125;
-          break; 
-        case 40:
-          bullet_x = 89;
-          bullet_y = 125;
-          break; 
-        case 44:
-          bullet_x = 87;
-          bullet_y = 125;
-          break; 
-        case 48:
-          bullet_x = 85;
-          bullet_y = 125;
-          break; 
-        case 56:
-          bullet_x = 80;
-          bullet_y = 125;
-          break; 
-        case 60:
-          bullet_x = 80;
-          bullet_y = 125;
-          break; 
-        case 64:
-          bullet_x = 73;
-          bullet_y = 125;
-          break; 
-        case 68:
-          bullet_x = 71;
-          bullet_y = 125;
-          break; 
-        case 72:
-          bullet_x = 69;
-          bullet_y = 125;
-          break; 
-        case 76:
-          bullet_x = 67;
-          bullet_y = 125;
-          break; 
-        case 80:
-          bullet_x = 65;
-          bullet_y = 125;
-          break; 
-        case 84:
-          bullet_x = 63;
-          bullet_y = 125;
-          break; 
-        case 88:
-          bullet_x = 63;
-          bullet_y = 126;
-          break; 
-        case 92:
-          bullet_x = 62;
-          bullet_y = 128;
-          break; 
-        case 96:
-          bullet_x = 62;
-          bullet_y = 130;
-          break; 
-        case 100:
-          bullet_x = 62;
-          bullet_y = 132;
-          break; 
-        case 104:
-          bullet_x = 63;
-          bullet_y = 134;
-          break; 
-        case 108:
-          bullet_x = 63;
-          bullet_y = 136;
-          break; 
-        case 112:
-          bullet_x = 62;
-          bullet_y = 140;
-          break; 
-        default:
-          break;
+      if (bullets[i].state == 0) {
+
+        switch (pos) {
+          case 0:  
+            bullets[i].x = 95;
+            bullets[i].y = 140; 
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          case 4:  
+            bullets[i].x = 95;
+            bullets[i].y = 137; 
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          case 8:  
+            bullets[i].x = 95;
+            bullets[i].y = 135; 
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          case 12:  
+            bullets[i].x = 95;
+            bullets[i].y = 133; 
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          case 16:  
+            bullets[i].x = 95;
+            bullets[i].y = 131; 
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          case 20:  
+            bullets[i].x = 95;
+            bullets[i].y = 129; 
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          case 24:  
+            bullets[i].x = 95;
+            bullets[i].y = 127; 
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          case 28:  
+            bullets[i].x = 95;
+            bullets[i].y = 125; 
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          case 32:  
+            bullets[i].x = 93;
+            bullets[i].y = 125;
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          case 36:  
+            bullets[i].x = 92;
+            bullets[i].y = 125;
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          case 40:
+            bullets[i].x = 89;
+            bullets[i].y = 125;
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          case 44:
+            bullets[i].x = 87;
+            bullets[i].y = 125;
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          case 48:
+            bullets[i].x = 85;
+            bullets[i].y = 125;
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          case 56:
+            bullets[i].x = 80;
+            bullets[i].y = 125;
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          case 60:
+            bullets[i].x = 80;
+            bullets[i].y = 125;
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          case 64:
+            bullets[i].x = 73;
+            bullets[i].y = 125;
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          case 68:
+            bullets[i].x = 71;
+            bullets[i].y = 125;
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          case 72:
+            bullets[i].x = 69;
+            bullets[i].y = 125;
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          case 76:
+            bullets[i].x = 67;
+            bullets[i].y = 125;
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          case 80:
+            bullets[i].x = 65;
+            bullets[i].y = 125;
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          case 84:
+            bullets[i].x = 63;
+            bullets[i].y = 125;
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          case 88:
+            bullets[i].x = 63;
+            bullets[i].y = 126;
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          case 92:
+            bullets[i].x = 62;
+            bullets[i].y = 128;
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          case 96:
+            bullets[i].x = 62;
+            bullets[i].y = 130;
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          case 100:
+            bullets[i].x = 62;
+            bullets[i].y = 132;
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          case 104:
+            bullets[i].x = 63;
+            bullets[i].y = 134;
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          case 108:
+            bullets[i].x = 63;
+            bullets[i].y = 136;
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          case 112:
+            bullets[i].x = 62;
+            bullets[i].y = 140;
+            bullets[i].dx = 4; 
+            bullets[i].dy = 4; 
+            break; 
+          default:
+            break;
+        }
+        bullets[i].state = 1;
+        break;
       }
-      printf("POS: %d", pos); // debug
-      move_sprite(20, bullet_x, bullet_y);
+
+      //printf("POS: %d", pos); // debug
+      move_sprite(bullets[i].sprite, bullets[i].x, bullets[i].y);
+      i += 1;
     }
+   }
+
+
+   i = 0;
+   while(i < 10) {
+     if (bullets[i].state == 1) {
+       bullets[i].x -= bullets[i].dx;
+       bullets[i].y -= bullets[i].dy;
+       move_sprite(bullets[i].sprite, bullets[i].x, bullets[i].y);
+     }
+
+     // 0 - 160 x
+     // 0 - 240 y
+     if (bullets[i].x <= 0 || bullets[i].x >= 160) {
+       bullets[i].x = 0;
+       bullets[i].y = 0;
+       bullets[i].state = 0;
+     }
+
+     i += 1;
+   }
+
+   i = 0;
 
 
 
