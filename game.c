@@ -11,7 +11,7 @@
 #include "dude_landed.c"
 
 // const unsigned char HUD2[] = " %d %c : %d %d ";
-const unsigned char HUD[] = " Score: %d Lives: %d ";
+const unsigned char HUD[] = " Score: %d Lives: %d Pos: %d";
 
 #define CLEAR_PROP  0x0U
 
@@ -64,6 +64,7 @@ struct Bullet {
   UINT8 dx;
   UINT8 dy;
   UINT8 state; // 0 for off screen, 1 for on screen
+  UINT8 pos;
 } bullets[10] = {
   {0, 0, 20, 0, 0, 0},
   {0, 0, 21, 0, 0, 0},
@@ -177,7 +178,7 @@ void main()
 
   while (1)
   {
-    gotoxy(0, 0); printf(HUD, 0, lives);
+    gotoxy(0, 0); printf(HUD, 0, lives, pos);
     // if(lives <= 0)
     // {
     //   // end the game
@@ -443,8 +444,8 @@ void main()
           case 68:
             bullets[i].x = 71;
             bullets[i].y = 125;
-            bullets[i].dx = 5; 
-            bullets[i].dy = 1; 
+            bullets[i].dx = 1; 
+            bullets[i].dy = 2; 
             break; 
           case 72:
             bullets[i].x = 69;
@@ -516,6 +517,7 @@ void main()
             break;
         }
         bullets[i].state = 1;
+        bullets[i].pos = pos;
         break;
       }
 
@@ -529,14 +531,26 @@ void main()
    i = 0;
    while(i < 10) {
      if (bullets[i].state == 1) {
-       bullets[i].x -= bullets[i].dx;
+       if (bullets[i].pos >= 64) {
+        bullets[i].x -= bullets[i].dx;
+       } else {
+        bullets[i].x += bullets[i].dx;
+       }
        bullets[i].y -= bullets[i].dy;
        move_sprite(bullets[i].sprite, bullets[i].x, bullets[i].y);
      }
 
+     // Collision / Score Update
+
      // 0 - 160 x
      // 0 - 240 y
-     if (bullets[i].x <= 0 || bullets[i].x >= 160) {
+     if (bullets[i].x <= 0 || bullets[i].x >= 155) {
+       bullets[i].x = 0;
+       bullets[i].y = 0;
+       bullets[i].state = 0;
+     }
+
+     if (bullets[i].y <= 5 || bullets[i].y >= 240) {
        bullets[i].x = 0;
        bullets[i].y = 0;
        bullets[i].state = 0;
