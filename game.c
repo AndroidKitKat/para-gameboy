@@ -347,38 +347,38 @@ void main()
           case 0:  
             bullets[i].x = 95;
             bullets[i].y = 140; 
-            bullets[i].dx = 4; 
-            bullets[i].dy = 4; 
+            bullets[i].dx = 1; 
+            bullets[i].dy = 0; 
             break; 
           case 4:  
             bullets[i].x = 95;
             bullets[i].y = 137; 
-            bullets[i].dx = 4; 
-            bullets[i].dy = 4; 
+            bullets[i].dx = 5; 
+            bullets[i].dy = 1; 
             break; 
           case 8:  
             bullets[i].x = 95;
             bullets[i].y = 135; 
             bullets[i].dx = 4; 
-            bullets[i].dy = 4; 
+            bullets[i].dy = 1; 
             break; 
           case 12:  
             bullets[i].x = 95;
             bullets[i].y = 133; 
-            bullets[i].dx = 4; 
-            bullets[i].dy = 4; 
+            bullets[i].dx = 3; 
+            bullets[i].dy = 1; 
             break; 
           case 16:  
             bullets[i].x = 95;
             bullets[i].y = 131; 
-            bullets[i].dx = 4; 
-            bullets[i].dy = 4; 
+            bullets[i].dx = 2; 
+            bullets[i].dy = 1; 
             break; 
           case 20:  
             bullets[i].x = 95;
             bullets[i].y = 129; 
             bullets[i].dx = 4; 
-            bullets[i].dy = 4; 
+            bullets[i].dy = 3; 
             break; 
           case 24:  
             bullets[i].x = 95;
@@ -401,73 +401,73 @@ void main()
           case 36:  
             bullets[i].x = 92;
             bullets[i].y = 125;
-            bullets[i].dx = 4; 
+            bullets[i].dx = 3; 
             bullets[i].dy = 4; 
             break; 
           case 40:
             bullets[i].x = 89;
             bullets[i].y = 125;
-            bullets[i].dx = 4; 
-            bullets[i].dy = 4; 
+            bullets[i].dx = 1; 
+            bullets[i].dy = 2; 
             break; 
           case 44:
             bullets[i].x = 87;
             bullets[i].y = 125;
-            bullets[i].dx = 4; 
-            bullets[i].dy = 4; 
+            bullets[i].dx = 1; 
+            bullets[i].dy = 3; 
             break; 
           case 48:
             bullets[i].x = 85;
             bullets[i].y = 125;
-            bullets[i].dx = 4; 
+            bullets[i].dx = 1; 
             bullets[i].dy = 4; 
             break; 
           case 56:
             bullets[i].x = 80;
             bullets[i].y = 125;
-            bullets[i].dx = 4; 
-            bullets[i].dy = 4; 
+            bullets[i].dx = 5; 
+            bullets[i].dy = 1; 
             break; 
           case 60:
             bullets[i].x = 80;
             bullets[i].y = 125;
-            bullets[i].dx = 4; 
-            bullets[i].dy = 4; 
+            bullets[i].dx = 0; 
+            bullets[i].dy = 1; 
             break; 
           case 64:
             bullets[i].x = 73;
             bullets[i].y = 125;
-            bullets[i].dx = 4; 
-            bullets[i].dy = 4; 
+            bullets[i].dx = 0; 
+            bullets[i].dy = 1; 
             break; 
           case 68:
             bullets[i].x = 71;
             bullets[i].y = 125;
-            bullets[i].dx = 4; 
-            bullets[i].dy = 4; 
+            bullets[i].dx = 5; 
+            bullets[i].dy = 1; 
             break; 
           case 72:
             bullets[i].x = 69;
             bullets[i].y = 125;
-            bullets[i].dx = 4; 
+            bullets[i].dx = 1; 
             bullets[i].dy = 4; 
             break; 
           case 76:
             bullets[i].x = 67;
             bullets[i].y = 125;
-            bullets[i].dx = 4; 
-            bullets[i].dy = 4; 
+            bullets[i].dx = 1; 
+            bullets[i].dy = 3; 
             break; 
           case 80:
             bullets[i].x = 65;
             bullets[i].y = 125;
-            bullets[i].dx = 4; 
-            bullets[i].dy = 4; 
+            bullets[i].dx = 1; 
+            bullets[i].dy = 2; 
             break; 
           case 84:
             bullets[i].x = 63;
             bullets[i].y = 125;
-            bullets[i].dx = 4; 
+            bullets[i].dx = 3; 
             bullets[i].dy = 4; 
             break; 
           case 88:
@@ -492,25 +492,25 @@ void main()
             bullets[i].x = 62;
             bullets[i].y = 132;
             bullets[i].dx = 4; 
-            bullets[i].dy = 4; 
+            bullets[i].dy = 3; 
             break; 
           case 104:
             bullets[i].x = 63;
             bullets[i].y = 134;
-            bullets[i].dx = 4; 
-            bullets[i].dy = 4; 
+            bullets[i].dx = 2; 
+            bullets[i].dy = 1; 
             break; 
           case 108:
             bullets[i].x = 63;
             bullets[i].y = 136;
-            bullets[i].dx = 4; 
-            bullets[i].dy = 4; 
+            bullets[i].dx = 3; 
+            bullets[i].dy = 1; 
             break; 
           case 112:
             bullets[i].x = 62;
             bullets[i].y = 140;
             bullets[i].dx = 4; 
-            bullets[i].dy = 4; 
+            bullets[i].dy = 1; 
             break; 
           default:
             break;
