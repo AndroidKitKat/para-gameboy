@@ -11,7 +11,7 @@
 #include "dude_landed.c"
 
 // const unsigned char HUD2[] = " %d %c : %d %d ";
-const unsigned char HUD[] = " Score: %d Lives: %d Pos: %d";
+const unsigned char HUD[] = " Score: %d Lives: %d ";
 
 #define CLEAR_PROP  0x0U
 
@@ -65,7 +65,7 @@ struct Bullet {
   UINT8 dy;
   UINT8 state; // 0 for off screen, 1 for on screen
   UINT8 pos;
-} bullets[10] = {
+} bullets[20] = {
   {0, 0, 20, 0, 0, 0},
   {0, 0, 21, 0, 0, 0},
   {0, 0, 22, 0, 0, 0},
@@ -75,7 +75,17 @@ struct Bullet {
   {0, 0, 26, 0, 0, 0},
   {0, 0, 27, 0, 0, 0},
   {0, 0, 28, 0, 0, 0},
-  {0, 0, 29, 0, 0, 0}
+  {0, 0, 29, 0, 0, 0},
+  {0, 0, 30, 0, 0, 0},
+  {0, 0, 31, 0, 0, 0},
+  {0, 0, 32, 0, 0, 0},
+  {0, 0, 33, 0, 0, 0},
+  {0, 0, 34, 0, 0, 0},
+  {0, 0, 35, 0, 0, 0},
+  {0, 0, 36, 0, 0, 0},
+  {0, 0, 37, 0, 0, 0},
+  {0, 0, 38, 0, 0, 0},
+  {0, 0, 39, 0, 0, 0},
 };
 
 // enemy vars
@@ -95,7 +105,7 @@ unsigned char switcheroo = 'r'; // used for logic in switching from the left to 
 UINT8 cooldown = 250; // cooldown timer for between chopper spawns
 UINT8 cooldown2 = 250;
 UBYTE lives = 5;
-
+UINT8 score = 0;
 void main()
 {
 
@@ -147,7 +157,16 @@ void main()
   set_sprite_tile(27, 74); // 8
   set_sprite_tile(28, 74); // 9
   set_sprite_tile(29, 74); // 10
-
+  set_sprite_tile(30, 74);
+  set_sprite_tile(31, 74);
+  set_sprite_tile(32, 74);
+  set_sprite_tile(33, 74);
+  set_sprite_tile(34, 74);
+  set_sprite_tile(35, 74);
+  set_sprite_tile(36, 74);
+  set_sprite_tile(37, 74);
+  set_sprite_tile(38, 74);
+  set_sprite_tile(39, 74);
 
 
   // generate random data
@@ -178,13 +197,19 @@ void main()
 
   while (1)
   {
-    gotoxy(0, 0); printf(HUD, 0, lives, pos);
+    gotoxy(0, 0); printf(HUD, score, lives);
     // if(lives <= 0)
     // {
     //   // end the game
     //   // figure out how to do this. 
     // }
     // gotoxy(0,0); printf(" %d ", cooldown);
+    if (lives == 0)
+    {
+      // end the game
+      HIDE_SPRITES;
+      break;
+    }
     if (c_alive < 3 && cooldown == 0)
     {
       cooldown = 250;
@@ -224,10 +249,6 @@ void main()
       i = 0;
     }
 
-    if (d_alive < 12)
-    {
-
-    }
     while(i < 3)
     {
       // gotoxy(0,0); printf(" %d ", i);
@@ -246,7 +267,7 @@ void main()
         while(j < 12) // again this is ass 
         {
           // gotoxy(0,0); printf(" %d ", d_alive);
-          if (dudes[j].state == 0 && cooldown2 < 30)
+          if (dudes[j].state == 0 && cooldown2 < 50)
           {
             temp_height = rand(); // please ignore this var being called temp_height, it is actually a temp X coord but i cba.
             // ass but might work
@@ -290,52 +311,12 @@ void main()
       i = i + 1;
     }
     i = 0;
-    //   // animate the copter
-    //   copX = copX + 1;
-    //   move_sprite(2, copX, new_height);
-    //   move_sprite(3, copX+8, new_height);
-    //   // animate the dude
-    //   // needs some randomness, however.
-    //   if (!dudes) {
-    //     dudeX = rand();
-    //     if (dudeX <= copX && dudeX > copX - 15 && dudeX < 150 && dudeX > 10) {
-    //       dudeY = new_height;
-    //       dudes = 1;
-    //     }
-    //   } else {
-    //     // animate the dude falling
-    //     // add some randomness into their falling?
-    //     if (rand() % 2){
-    //       dudeY = dudeY + 1;
-    //       move_sprite(8, dudeX, dudeY);
-    //     }
-    //   }
-    // }
-    // gotoxy(0,0); printf(" %d ", dudes);
-    // gotoxy(0,0); printf(" %d : %d ",  cop_2_x, new_height);
 
-    // REFERNCE
-    // pos / 4 = ...
-    // 0 - 14 normal
-    // 14 - 28 // flip y
-    // gotoxy(0, 0); printf(HUD2, pos / 4, switcheroo, bul_x, bul_y);
-    // if (active_shooter == 't')
-    // {
-    //   bul_y--;
-    //   move_sprite(2, bul_x, bul_y);
-    // }
-    // // // shoot bullet!
-    // if (joypad() == J_A) {
-    //   active_shooter = 't';
-    //   bul_x = 80;
-    //   bul_y = 120;
-    //   move_sprite(2, bul_x, bul_y);
-    // }
 
     if (joypad() == J_A)
     {
       i = 0;
-      while (i < 10) {
+      while (i < 20) {
       // Right now hardcoded. Somehow, have to know the angle and x/y of end of gun
       // We can choose angle and starting x/y based on "pos" var
       // e.g. when pos == 60, angle is straight up (90), starting x/y is 
@@ -529,7 +510,7 @@ void main()
 
 
    i = 0;
-   while(i < 10) {
+   while(i < 20) {
      if (bullets[i].state == 1) {
        if (bullets[i].pos >= 64) {
         bullets[i].x -= bullets[i].dx;
@@ -538,29 +519,70 @@ void main()
        }
        bullets[i].y -= bullets[i].dy;
        move_sprite(bullets[i].sprite, bullets[i].x, bullets[i].y);
+
+       // collision here & score
+       while (j < 12) // loop through dudes
+       {
+         if (j < 3) // do choppers
+         {
+           if (bullets[i].x <= copters[j].x && bullets[i].y < copters[j].height && bullets[i].x > copters[j].x - 16 && bullets[i].y > copters[j].height - 16)
+           {
+             copters[j].state = 0;
+             move_sprite(copters[j].sprite, 255, 255);
+             move_sprite(copters[j].sprite + 1, 255, 255);
+             copters[j].x = 255;
+             copters[j].height = 255;
+             copters[j].direction = 0;
+             set_sprite_prop(copters[j].sprite, CLEAR_PROP);
+             set_sprite_prop(copters[j].sprite + 1, CLEAR_PROP);
+             c_alive -= 1;
+             bullets[i].state = 0;
+             move_sprite(bullets[i].sprite, 255, 255);
+             score += 3;
+           }
+         }
+         // check if the bullet is inside the dude
+         if (bullets[i].x <= dudes[j].x && bullets[i].y < dudes[j].y && bullets[i].x > dudes[j].x - 8 && bullets[i].y > dudes[j].y - 16 && dudes[j].state != 2)
+         {
+           dudes[j].state = 0;
+           move_sprite(dudes[j].sprite, 255, 255);
+           dudes[j].x = 255;
+           dudes[j].y = 255;
+           d_alive -= 1;
+           bullets[i].state = 0;
+           move_sprite(bullets[i].sprite, 255, 255);
+           score += 1;
+         }
+         j += 1;
+       }
+       j = 0;
      }
-
-     // Collision / Score Update
-
      // 0 - 160 x
      // 0 - 240 y
      if (bullets[i].x <= 0 || bullets[i].x >= 155) {
        bullets[i].x = 0;
        bullets[i].y = 0;
+       move_sprite(bullets[i].sprite, 0,0);
        bullets[i].state = 0;
      }
 
      if (bullets[i].y <= 5 || bullets[i].y >= 240) {
        bullets[i].x = 0;
        bullets[i].y = 0;
+      move_sprite(bullets[i].sprite, 0,0);
        bullets[i].state = 0;
      }
+
 
      i += 1;
    }
 
    i = 0;
 
+    // REFERNCE
+    // pos / 4 = ...
+    // 0 - 14 normal
+    // 14 - 28 // flip y
 
 
     // right half
@@ -667,4 +689,9 @@ void main()
     cooldown2 = cooldown2 - 5;
     wait_vbl_done();
   }
+  // say game over & show score
+  printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"); 
+
+  gotoxy(0,0); printf("GAME OVER!\n");
+  printf("Score: %d ", score);
 }
